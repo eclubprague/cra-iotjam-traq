@@ -1,0 +1,33 @@
+{
+  "name": "cro-iotjam-traq",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eclubprague/cro-iotjam-traq.git"
+  },
+  "keywords": [
+    "iot",
+    "car",
+    "tracking",
+    "jam"
+  ],
+  "author": "eclub",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/eclubprague/cro-iotjam-traq/issues"
+  },
+  "homepage": "https://github.com/eclubprague/cro-iotjam-traq#readme",
+  "dependencies": {
+    "assert": "^1.4.1",
+    "express": "^4.14.0",
+    "http": "0.0.0",
+    "mongodb": "^2.2.11",
+    "request": "^2.78.0",
+    "url": "^0.11.0"
+  }
+}
