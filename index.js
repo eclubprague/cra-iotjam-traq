@@ -84,6 +84,8 @@ function findRoutes(car) {
         record.timestamp = new Date(record.createdAt).getTime();
     });
 
+    car.locationRecords.reverse();
+
     car.routes = [];
 }
 
