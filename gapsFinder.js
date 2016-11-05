@@ -33,7 +33,7 @@ MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, d
                     var routePoint = {}
                     routePoint.lat = locationRecord.lrrLAT;
                     routePoint.long = locationRecord.lrrLON;
-                    routePoint.timestmap = locationRecord.timestamp;
+                    routePoint.timestamp = locationRecord.timestamp;
                     route.push(routePoint);
 
                 } else {
