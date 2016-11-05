@@ -37,13 +37,15 @@ MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, d
                     routePoint.latitude = locationRecord.lrrLAT;
                     routePoint.longtitude = locationRecord.lrrLON;
                     routePoint.timestamp = locationRecord.timestamp;
+                    routePoint.timestamp = locationRecord.createdAt;
+                    
                     if ((previousLat != undefined) && (previousLat != undefined)) {
-                        routePoint.distance = distance(previousLat, previousLon, routePoint.latitude, routePoint.longtitude)*1000.0;
-                        previousLat = routePoint.latitude;
-                        previousLon = routePoint.longtitude;
+                        routePoint.distance = distance(previousLat, previousLon, routePoint.latitude, routePoint.longtitude)*1.0;
                     } else {
                         routePoint.distance = 0;
                     }
+                    previousLat = routePoint.latitude;
+                    previousLon = routePoint.longtitude;
                     route.push(routePoint);
 
                 } else {
