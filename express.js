@@ -42,6 +42,26 @@ app.get('/:id', function (req, res) {
         }
     });
 
-})
+});
+
+app.get('/cars', function (req, res) {
+    MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, db) {
+        if (!err) {
+
+            var response = [];
+
+            var cars = db.collection("car").find();
+            cars.forEach(function(car){
+                delete car.routes;
+                delete car.locationRecords;
+
+                response.push(car);
+            });
+            res.send(response);
+        }
+    });
+
+});
+
 
 app.listen(3000);
