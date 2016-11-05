@@ -1,4 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
+var distance = require('gps-distance');
 
 var maxDelay = 1200000; //120 seconds
 
@@ -25,20 +26,31 @@ MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, d
             var route = [];
             var gaps = 0;
 
+            var previousLat = undefined;
+            var previousLon = undefined;
 
             car.locationRecords.forEach(function (locationRecord) {
                 count++;
                 if (Math.abs(locationRecord.timestamp - last) < maxDelay) {
                     //if next record fits in given interval
                     var routePoint = {}
-                    routePoint.lat = locationRecord.lrrLAT;
-                    routePoint.long = locationRecord.lrrLON;
+                    routePoint.latitude = locationRecord.lrrLAT;
+                    routePoint.longtitude = locationRecord.lrrLON;
                     routePoint.timestamp = locationRecord.timestamp;
+                    if ((previousLat != undefined) && (previousLat != undefined)) {
+                        routePoint.distance = distance(previousLat, previousLon, routePoint.latitude, routePoint.longtitude);
+                        previousLat = routePoint.latitude;
+                        previousLon = routePoint.longtitude;
+                    } else {
+                        routePoint.distance = 0;
+                    }
                     route.push(routePoint);
 
                 } else {
                     //if there is a gap
                     car.routes.push(route);
+                    previousLat = undefined;
+                    previousLon = undefined;
                     route = [];
                     //console.log("found gap", locationRecord.lrrLAT, locationRecord.lrrLON, count);
                     count = 0;
@@ -50,7 +62,7 @@ MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, d
             carData.updateOne({devEUI: car.devEUI}, {$set: {"routes": car.routes}}, function (err, result) {
                 console.log("Car", car.devEUI, "updated into DB.", err);
                 finished++;
-                console.log("finished", finished,toFinish);
+                console.log("finished", finished, toFinish);
                 if (finished === toFinish) {
                     db.close();
                     process.exit();
