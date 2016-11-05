@@ -52,11 +52,12 @@ app.get('/cars', function (req, res) {
 
             var cars = db.collection("car").find();
             cars.forEach(function(car){
-                delete car.routes;
-                delete car.locationRecords;
+                car.routes=undefined;
+                car.locationRecords=undefined;
 
                 response.push(car);
             });
+            console.log(response);
             res.send(response);
         }
     });
