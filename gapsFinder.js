@@ -29,7 +29,9 @@ MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, d
             var previousLat = undefined;
             var previousLon = undefined;
 
+
             car.locationRecords.forEach(function (locationRecord) {
+
                 count++;
                 if (Math.abs(locationRecord.timestamp - last) < maxDelay) {
                     //if next record fits in given interval
@@ -40,7 +42,7 @@ MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, d
                     routePoint.timestamp = locationRecord.createdAt;
                     
                     if ((previousLat != undefined) && (previousLat != undefined)) {
-                        routePoint.distance = distance(previousLat, previousLon, routePoint.latitude, routePoint.longtitude)*1.0;
+                        routePoint.distance = 0;//distance(previousLat, previousLon, routePoint.latitude, routePoint.longtitude);
                     } else {
                         routePoint.distance = 0;
                     }
