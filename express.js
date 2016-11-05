@@ -10,7 +10,7 @@ app.use(function(req, res, next) {
 });
 
 
-app.get('/:id', function (req, res) {
+app.get('/:id/routes', function (req, res) {
     MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, db) {
         if (!err) {
             console.log(req.params.id);
