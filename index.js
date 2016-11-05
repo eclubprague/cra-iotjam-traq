@@ -6,7 +6,8 @@ var assert = require('assert');
 
 var token = "jhYUm4QuKXXK3LdqxpBeKiaHV4JR97Zj";
 var constOffset = 1000;
-
+var toFinish = 0;
+var finished = 0;
 
 function getCars(callback) {
     var options = {
@@ -41,11 +42,11 @@ function getCarDataRequest(db, callback, car, offset) {
 function getCarData(db, data, car, offset) {
     car.locationRecords = car.locationRecords.concat(data.records);
     if (data.records.length == constOffset) {
-        console.log("Next request: " + car.devEUI + " offset: " + offset);
+        //console.log("Next request: " + car.devEUI + " offset: " + offset);
         getCarDataRequest(db, getCarData, car, offset + constOffset);
     } else {
         console.log(car.devEUI, " ends on: " + (offset + data.records.length), "//", car.locationRecords.length);
-        console.log(car.devEUI, " finding routes");
+        //console.log(car.devEUI, " finding routes");
         findRoutes(car);
         insertCarIntoDB(db, car);
     }
@@ -57,15 +58,30 @@ function clearDB(db){
 
 function insertCarIntoDB(db, car) {
     db.collection('car').insertOne(car, function (err, result) {
-        console.log("Car", car.devEUI, "inserted into DB.");
+        console.log("Car", car.devEUI, "inserted into DB.",err);
+        finished++;
+        console.log("finished",finished,toFinish);
+        if(finished===toFinish){
+            db.close();
+            process.exit();
+        }
     });
 }
 
 function findRoutes(car) {
+    //route search is in gapsFindes.js here we just add timestamp
     car.locationRecords.forEach(function(record){
+        // values to trim
+        delete record.fPort;
+        delete record.aDRbit;
+        delete record.payloadHex;
+        delete record.micHex;
+        delete record.lrrs;
+        delete record.spFact;
+        delete record.subBand;
+        delete record.channel;
+        
         record.timestamp = new Date(record.createdAt).getTime();
-
-
     });
 
     car.routes = [];
@@ -77,6 +93,7 @@ MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, d
 
         clearDB(db);
         getCars(function (cars) {
+            toFinish=cars.records.length;
             cars.records.forEach(function (car) {
                 car.locationRecords = [];
                 getCarDataRequest(db, getCarData, car, 0);
