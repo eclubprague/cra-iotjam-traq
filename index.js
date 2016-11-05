@@ -143,8 +143,8 @@ function findRoutes(car) {
                 var newRecord = {};
                 newRecord.timestamp = new Date(record.createdAt).getTime();
                 newRecord.createdAt = record.createdAt;
-                newRecord.lrrLAT = decodedPayload.payload.lat;
-                newRecord.lrrLON = decodedPayload.payload.lon;
+                newRecord.lrrLAT = parseFloat(decodedPayload.payload.lat);
+                newRecord.lrrLON = parseFloat(decodedPayload.payload.lon);
                 newLocationRecords.push(newRecord);
             }
         }
