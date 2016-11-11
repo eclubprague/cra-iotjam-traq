@@ -1,7 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 var distance = require('gps-distance');
 
-var maxDelay = 1200000; //120 seconds
+var maxDelay = 120000; //120 seconds
 
 console.log("running");
 
@@ -42,7 +42,7 @@ MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, d
                     routePoint.timestamp = locationRecord.createdAt;
                     
                     if ((previousLat != undefined) && (previousLat != undefined)) {
-                        routePoint.distance = 0;//distance(previousLat, previousLon, routePoint.latitude, routePoint.longtitude);
+                        routePoint.distance = distance(previousLat, previousLon, routePoint.latitude, routePoint.longtitude);
                     } else {
                         routePoint.distance = 0;
                     }
