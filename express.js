@@ -44,6 +44,40 @@ app.get('/:id/routes', function (req, res) {
 
 });
 
+app.get('/:id/routes/:index', function (req, res) {
+    MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, db) {
+        if (!err) {
+            console.log(req.params.id);
+            var filter = {"devEUI": req.params.id};
+            var index = req.params.index;
+
+
+            var car = db.collection("car").find(filter);
+            car.forEach(function (car) {
+                var response = [];
+
+                if(index >= 0 && index <car.routes.length) {
+                    var route = car.routes[index];
+                    if (route.length > 0) {
+                        var newRoute = [];
+
+                        route.forEach(function (routePoint) {
+                            var point = {};
+                            point.lat = routePoint.latitude;
+                            point.lng = routePoint.longtitude;
+                            newRoute.push(point);
+                        });
+                        response.push(newRoute);
+                    }
+                }
+                res.send(response);
+            });
+
+        }
+    });
+
+});
+
 app.get('/cars', function (req, res) {
     MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, db) {
         if (!err) {
