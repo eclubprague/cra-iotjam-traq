@@ -29,6 +29,7 @@ app.get('/:id/routes', function (req, res) {
                             var point = {};
                             point.lat = routePoint.latitude;
                             point.lng = routePoint.longtitude;
+                            point.time = routePointe.timestamp;
                             newRoute.push(point);
                         });
                         response.push(newRoute);
