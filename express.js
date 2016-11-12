@@ -66,6 +66,7 @@ app.get('/:id/routes/:index', function (req, res) {
                             var point = {};
                             point.lat = routePoint.latitude;
                             point.lng = routePoint.longtitude;
+                            point.time = routePoint.timestamp;
                             newRoute.push(point);
                         });
                         response.push(newRoute);
