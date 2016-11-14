@@ -35,14 +35,50 @@ app.get('/:id/routes', function (req, res) {
                         response.push(newRoute);
                     }
                 });
+                res.send(response);
+            });
+        }
+    });
+});
+
+app.get('/:id/matches', function (req, res) {
+    MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, db) {
+        if (!err) {
+            console.log(req.params.id);
+            var filter = {"devEUI": req.params.id};
 
 
+            var routes = db.collection("routes").find(filter);
+            routes.forEach(function (matched) {
+                var response = [];
+
+                matched.routes.forEach(function (route) {
+                        response.push(route);
+                });
+                res.send(response);
+            });
+        }
+    });
+});
+
+app.get('/:id/matches/:index', function (req, res) {
+        MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, db) {
+        if (!err) {
+            console.log(req.params.id);
+            var filter = {"devEUI": req.params.id};
+            var index = req.params.index;
+            var routes = db.collection("routes").find(filter);
+            routes.forEach(function (matched) {
+                var response = [];
+                if(index >= 0 && index <matched.routes.length) {
+                    var route = matched.routes[index];
+                    response.push(route);
+                }
                 res.send(response);
             });
 
         }
     });
-
 });
 
 app.get('/:id/routes/:index', function (req, res) {

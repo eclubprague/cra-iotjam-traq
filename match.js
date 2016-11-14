@@ -12,6 +12,8 @@ MongoClient.connect("mongodb://iot.eclubprague.com:27017/traq", function (err, d
 		routesCollection.drop();
 		var cars = carCollection.find();
 		cars.forEach(function(car) {
+			var matched = [];
+			routesCollection.save({"devEUI":car.devEUI, "routes":matched});
 			var index = 0;
 			car.routes.forEach(function(route) {
 				if(route.length > 5) {
@@ -81,7 +83,8 @@ function routeMatchedCallback(db, matchedData, startTime, endTime, devEUI, index
 								  coords[i][0]);
 	}
 	var routesCollection = db.collection('routes');
-	routesCollection.save({"devEUI": devEUI, "routes": coords, "startTime":startTime, "endTime":endTime, "distance":routeDistance}, function (err, result) {
+	var theRoute = {"index": index, "points": coords, "startTime":startTime, "endTime":endTime, "distance":routeDistance};
+	routesCollection.updateOne({"devEUI": devEUI}, {$push: {"routes" : theRoute }}, function (err, result) {
                 console.log("Route for car", devEUI, "updated into DB.", err);
 	});
 
